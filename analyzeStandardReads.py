@@ -109,7 +109,7 @@ def analyzeStandardResult(resultTable:dict):
     miqScoreResult.makeReadFateChart(readFatePrintNames=readFatePrintNames)
     miqScoreResult.makeRadarPlots()
     goodMiqPath = os.path.join(os.path.split(__file__)[0], "reference", "goodMiq.json")
-    badMiqPath = os.path.join(os.path.split(__file__)[0], "reference", "badMiq.json.OLD")
+    badMiqPath = os.path.join(os.path.split(__file__)[0], "reference", "badMiq.json")
     goodComposition, badComposition = miqScoreNGSReadCountPublic.loadReferenceCompositionFromExampleMiq(goodMiqPath, badMiqPath)
     miqScoreResult.makeCompositionBarPlot(goodComposition, badComposition)
     return miqScoreResult
