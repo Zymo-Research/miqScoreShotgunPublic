@@ -1,0 +1,3 @@
+[submodule "miqScoreNGSReadCountPublic"]
+	path = miqScoreNGSReadCountPublic
+	url = git@github.com:Zymo-Research/miqScoreNGSReadCountPublic.git
