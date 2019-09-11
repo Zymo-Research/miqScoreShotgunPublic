@@ -88,6 +88,7 @@ Patch release: No changes to parameters
 - **Jeffrey Bhasin** - *Design, Code Review* - [jeffbhasin](https://github.com/jeffbhasin)
 - **Ryan Kemp**  - *Design* - [Zymo Research](https://www.zymoresearch.com)
 - **Brian Janssen**  - *Design* - [Zymo Research](https://www.zymoresearch.com)
+- **Christopher E. Mason** - *Guidance, Testing* - [Cornell University](https://research.cornell.edu/researchers/christopher-e-mason)
 
 See also the list of [contributors](https://github.com/Zymo-Research/miqScoreShotgunPublic/contributors) who participated in this project.
 

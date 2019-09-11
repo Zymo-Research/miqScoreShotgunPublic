@@ -153,7 +153,7 @@ def generateAnalyzedReadList(bamFilePath:str):
         readCount += 1
         if readCount % 500000 == 0:
             analysisTime = datetime.datetime.now() - startTime
-            print("Analyzed %s reads in %s" %(readCount, analysisTime))
+            print("Analyzed %s reads in %s" %(readCount, analysisTime), flush=True)
     bamFile.close()
     analysisTime = datetime.datetime.now() - startTime
     print("Analyzed %s reads in %s" % (readCount, analysisTime))
