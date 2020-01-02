@@ -1,5 +1,7 @@
-__all__ = ["alignmentAnalysis",
+__all__ = ["alignmentAnalysisPE",
+           "alignmentAnalysisSE",
            "bwaHandler"]
 
-from . import alignmentAnalysis
+from . import alignmentAnalysisPE
+from . import alignmentAnalysisSE
 from . import bwaHandler
