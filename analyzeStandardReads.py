@@ -171,7 +171,7 @@ readFatePrintNames = {"filteredReads": "Failed Quality Filter",
 def analyzeStandardResult(resultTable:dict):
     referenceDataFile = os.path.join(os.path.split(__file__)[0], "reference", "zrCommunityStandard.json")
     referenceData = miqScoreNGSReadCountPublic.referenceHandler.StandardReference(referenceDataFile)
-    calculator = miqScoreNGSReadCountPublic.MiqScoreCalculator(referenceData, analysisMethod="Genomic", percentToleranceInStandard=15, floor=0)
+    calculator = miqScoreNGSReadCountPublic.MiqScoreCalculator(referenceData, analysisMethod="Genomic", floor=0)
     miqScoreResult = calculator.calculateMiq(resultTable, parameters.sampleName.value)
     miqScoreResult.makeReadFateChart(readFatePrintNames=readFatePrintNames)
     miqScoreResult.makeRadarPlots()

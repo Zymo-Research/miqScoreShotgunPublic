@@ -1,4 +1,5 @@
 {
+    "percentTolerance": 15,
     "nameLookup": {
         "cryptococcus": "cneoformans",
         "bacillus" : "bsubtilis",
