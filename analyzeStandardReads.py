@@ -230,10 +230,11 @@ if __name__ == "__main__":
         miqScoreShotgunPublicSupport.alignmentAnalysis.bwaHandler.bwaAlignPE(parameters.forwardReads.value, parameters.reverseReads.value, parameters.workingFolder.value, bamFilePath, parameters.referenceGenome.value)
         readTable = miqScoreShotgunPublicSupport.alignmentAnalysis.alignmentAnalysisPE.bamFileProcessor(bamFilePath)
     elif applicationMode == "SE":
-        miqScoreShotgunPublicSupport.alignmentAnalysis.bwaHandler.bwaAlignSE(parameters.forwardReads.value, parameters.workingFolder.value, bamFilePath, parameters.referenceGenome.value)
+        miqScoreShotgunPublicSupport.alignmentAnalysis.bwaHandler.bwaAlignSE(parameters.reads.value, parameters.workingFolder.value, bamFilePath, parameters.referenceGenome.value)
         readTable = miqScoreShotgunPublicSupport.alignmentAnalysis.alignmentAnalysisSE.bamFileProcessor(bamFilePath)
     elif applicationMode == "LONG":
-        raise RuntimeError("Functionality not yet implemented")  #TODO Implement this.  Should require BWA minimap and then SE caller logic
+        miqScoreShotgunPublicSupport.alignmentAnalysis.minimap2.minimapAlign(parameters.reads.value, parameters.workingFolder.value, bamFilePath, parameters.referenceGenome.value)
+        readTable = miqScoreShotgunPublicSupport.alignmentAnalysis.alignmentAnalysisSE.bamFileProcessor(bamFilePath)
     standardAnalysisResults = analyzeStandardResult(readTable)
     saveResult(standardAnalysisResults)
     generateReport(standardAnalysisResults)
