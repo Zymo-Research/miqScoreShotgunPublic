@@ -64,8 +64,7 @@ RUN cd /opt/referenceBuild/ && \
     pip3 install -r requirements.txt && \
     cd reference && \
     echo "Indexing standard genome" && \
-    bwa index zrCommunityStandard.fa && \
-    minimap2 -d zrCommunityStandard.mni zrCommunityStandard.fa
+    bwa index zrCommunityStandard.fa
 
 #doing cheaper and likely to change build steps now
 COPY . /opt/miqScoreShotgun
