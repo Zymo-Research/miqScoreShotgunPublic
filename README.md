@@ -36,7 +36,7 @@ To do this, create the following directory structure somewhere on your system wh
 +-- working
 +-- output
 ```
-This directory can have any name desired (**dataMountDirectory** will be used from here on as its name) so long as it conforms to good naming practices.  The files standard_submitted_R1.fastq and standard_submitted_R2.fastq are where this docker will look for read 1 and read 2 data, respectively, if no other files are specified.  These file names will work even if the fastq files are compressed using gzip.
+This directory can have any name desired (**dataMountDirectory** will be used from here on as its name) so long as it conforms to good naming practices.  The files standard_submitted_R1.fastq and standard_submitted_R2.fastq are where this docker will look for read 1 and read 2 data, respectively, if no other files are specified.  If running in SE or LONG mode, only standard_submitted_R1.fastq will be used.  These file names will work even if the fastq files are compressed using gzip.
 
 To run this container, you need only supply the path to the above-described directory structure and a sample name:
 
@@ -57,6 +57,7 @@ WORKINGFOLDER	|	string	|	/data/working	|	Path to working folder for temporary fi
 OUTPUTFOLDER	|	string	|	/data/output	|	Folder within the container to write output data
 REFERENCEGENOME	|	string	|	[folderWithPackage]/reference/zrCommunityStandard.fa	|	File containing the reference sequence for the standard within the container
 FILENAMINGSTANDARD	|	string	|	ZYMO	|	How sequence files will be named (other option is "illumina")
+MODE | string | PE | Running mode.  PE for paired-end, SE for single end, LONG for Nanopore reads.  PE and SE use similar alignment but different analysis logic. SE and LONG use the same analysis logic, but different aligners.
 
 
 ## OUTPUT

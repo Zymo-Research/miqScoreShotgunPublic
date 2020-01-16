@@ -41,6 +41,7 @@ def bwaAlignPE(forwardReads:str, reverseReads:str, workingFolder:str, outputBAM:
         if exitCode:
             raise RuntimeError("Running alignment and compression returned a non-zero exit status")
 
+
 def bwaAlignSE(forwardReads:str, workingFolder:str, outputBAM:str, refGenome:str, coreLimit:int=None, compressionCoresPercentage:float=0.15, mock:bool=False):
     import multiprocessing
     import os
