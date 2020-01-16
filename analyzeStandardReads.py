@@ -26,6 +26,9 @@ def getApplicationParametersSE():
     parameters.addParameter("outputFolder", str, default=default.outputFolder, createdDirectory=True)
     parameters.addParameter("referenceGenome", str, default=default.referenceGenome, expectedFile=True)
     parameters.addParameter("fileNamingStandard", str, default="zymo", externalValidation=True)
+    parameters.addParameter("referenceDataFile", str, default = default.referenceDataFile, expectedFile=True)
+    parameters.addParameter("goodMiqExample", str, default = default.goodMiqExample, expectedFile=True)
+    parameters.addParameter("badMiqExample", str, default=default.badMiqExample, expectedFile=True)
     if not validSampleName(parameters.sampleName.value):
         logger.error("Invalid sample name given: %s" %parameters.sampleName.value)
         raise ValueError("Invalid sample name given: %s" %parameters.sampleName.value)
@@ -44,6 +47,9 @@ def getApplicationParametersPE():
     parameters.addParameter("outputFolder", str, default=default.outputFolder, createdDirectory=True)
     parameters.addParameter("referenceGenome", str, default=default.referenceGenome, expectedFile=True)
     parameters.addParameter("fileNamingStandard", str, default="zymo", externalValidation=True)
+    parameters.addParameter("referenceDataFile", str, default=default.referenceDataFile, expectedFile=True)
+    parameters.addParameter("goodMiqExample", str, default = default.goodMiqExample, expectedFile=True)
+    parameters.addParameter("badMiqExample", str, default=default.badMiqExample, expectedFile=True)
     if not validSampleName(parameters.sampleName.value):
         logger.error("Invalid sample name given: %s" %parameters.sampleName.value)
         raise ValueError("Invalid sample name given: %s" %parameters.sampleName.value)
@@ -61,6 +67,9 @@ def getApplicationParametersLong():
     parameters.addParameter("outputFolder", str, default=default.outputFolder, createdDirectory=True)
     parameters.addParameter("referenceGenome", str, default=default.referenceGenome, expectedFile=True)
     parameters.addParameter("fileNamingStandard", str, default="zymo", externalValidation=True)
+    parameters.addParameter("referenceDataFile", str, default=default.referenceDataFileHMW, expectedFile=True)
+    parameters.addParameter("goodMiqExample", str, default = default.goodMiqExampleHMW, expectedFile=True)
+    parameters.addParameter("badMiqExample", str, default=default.badMiqExampleHMW, expectedFile=True)
     if not validSampleName(parameters.sampleName.value):
         logger.error("Invalid sample name given: %s" %parameters.sampleName.value)
         raise ValueError("Invalid sample name given: %s" %parameters.sampleName.value)
@@ -169,15 +178,12 @@ readFatePrintNames = {"filteredReads": "Failed Quality Filter",
 
 
 def analyzeStandardResult(resultTable:dict):
-    referenceDataFile = os.path.join(os.path.split(__file__)[0], "reference", "zrCommunityStandard.json")
-    referenceData = miqScoreNGSReadCountPublic.referenceHandler.StandardReference(referenceDataFile)
+    referenceData = miqScoreNGSReadCountPublic.referenceHandler.StandardReference(parameters.referenceDataFile.value)
     calculator = miqScoreNGSReadCountPublic.MiqScoreCalculator(referenceData, analysisMethod="Genomic", floor=0)
     miqScoreResult = calculator.calculateMiq(resultTable, parameters.sampleName.value)
     miqScoreResult.makeReadFateChart(readFatePrintNames=readFatePrintNames)
     miqScoreResult.makeRadarPlots()
-    goodMiqPath = os.path.join(os.path.split(__file__)[0], "reference", "goodMiq.json")
-    badMiqPath = os.path.join(os.path.split(__file__)[0], "reference", "badMiq.json")
-    goodComposition, badComposition = miqScoreNGSReadCountPublic.loadReferenceCompositionFromExampleMiq(goodMiqPath, badMiqPath)
+    goodComposition, badComposition = miqScoreNGSReadCountPublic.loadReferenceCompositionFromExampleMiq(parameters.goodMiqExample.value, parameters.badMiqExample.value)
     miqScoreResult.makeCompositionBarPlot(goodComposition, badComposition)
     return miqScoreResult
 
@@ -192,15 +198,12 @@ def saveResult(result:miqScoreNGSReadCountPublic.MiqScoreData):
 
 
 def generateReport(result:miqScoreNGSReadCountPublic.MiqScoreData):
-    referenceDataFile = os.path.join(os.path.split(__file__)[0], "reference", "zrCommunityStandard.json")
-    referenceData = miqScoreNGSReadCountPublic.referenceHandler.StandardReference(referenceDataFile)
+    referenceData = miqScoreNGSReadCountPublic.referenceHandler.StandardReference(parameters.referenceDataFile.value)
     templateFilePath = os.path.join(os.path.split(os.path.abspath(__file__))[0], "reference", "shotgunReportTemplate.html")
     templateFile = open(templateFilePath, 'r')
     template = templateFile.read()
     templateFile.close()
-    goodMiqPath = os.path.join(os.path.split(__file__)[0], "reference", "goodMiq.json")
-    badMiqPath = os.path.join(os.path.split(__file__)[0], "reference", "badMiq.json")
-    goodMiq, badMiq = miqScoreNGSReadCountPublic.loadExampleData(goodMiqPath, badMiqPath, referenceData, "Genomic")
+    goodMiq, badMiq = miqScoreNGSReadCountPublic.loadExampleData(parameters.goodMiqExample.value, parameters.badMiqExample.value, referenceData, "Genomic")
     replacementTable = miqScoreShotgunPublicSupport.reporting.generateReplacementTable(result, goodMiq, badMiq, readFatePrintNames=readFatePrintNames)
     report = miqScoreNGSReadCountPublic.reportGeneration.generateReport(template, replacementTable)
     reportFilePath = os.path.join(parameters.outputFolder.value, "%s.html" % parameters.sampleName.value)
