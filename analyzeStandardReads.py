@@ -197,6 +197,22 @@ def saveResult(result:miqScoreNGSReadCountPublic.MiqScoreData):
     return outputFilePath
 
 
+def generateReportReplacementTable(sampleMiq, goodExampleMiq, badExampleMiq, readFatePrintNames:dict=None):
+    readFateTable = miqScoreShotgunPublicSupport.reporting.generateReadFateChartBody(miqScoreShotgunPublicSupport.reporting.generateAbsoluteReadFateCounts(sampleMiq), readFatePrintNames)
+    replacementTable = {"SAMPLENAME": sampleMiq.sampleID,
+                        "MIQSCORE": str(round(sampleMiq.miqScore)),
+                        "READFATETABLE": readFateTable,
+                        "READFATECHART": sampleMiq.plots["readFates"],
+                        "COMPOSITIONBARPLOT": sampleMiq.plots["compositionPlot"],
+                        "GOODRADARPLOTLYSIS": goodExampleMiq.plots["radarPlots"]["Lysis Difficulty"],
+                        "SAMPLERADARPLOTLYSIS": sampleMiq.plots["radarPlots"]["Lysis Difficulty"],
+                        "BADRADARPLOTLYSIS": badExampleMiq.plots["radarPlots"]["Lysis Difficulty"],
+                        "GOODRADARPLOTGC": goodExampleMiq.plots["radarPlots"]["GC Content"],
+                        "SAMPLERADARPLOTGC": sampleMiq.plots["radarPlots"]["GC Content"],
+                        "BADRADARPLOTGC": badExampleMiq.plots["radarPlots"]["GC Content"]}
+    return replacementTable
+
+
 def generateReport(result:miqScoreNGSReadCountPublic.MiqScoreData):
     referenceData = miqScoreNGSReadCountPublic.referenceHandler.StandardReference(parameters.referenceDataFile.value)
     templateFilePath = os.path.join(os.path.split(os.path.abspath(__file__))[0], "reference", "shotgunReportTemplate.html")
@@ -204,7 +220,7 @@ def generateReport(result:miqScoreNGSReadCountPublic.MiqScoreData):
     template = templateFile.read()
     templateFile.close()
     goodMiq, badMiq = miqScoreNGSReadCountPublic.loadExampleData(parameters.goodMiqExample.value, parameters.badMiqExample.value, referenceData, "Genomic")
-    replacementTable = miqScoreShotgunPublicSupport.reporting.generateReplacementTable(result, goodMiq, badMiq, readFatePrintNames=readFatePrintNames)
+    replacementTable = generateReportReplacementTable(result, goodMiq, badMiq, readFatePrintNames=readFatePrintNames)
     report = miqScoreNGSReadCountPublic.reportGeneration.generateReport(template, replacementTable)
     reportFilePath = os.path.join(parameters.outputFolder.value, "%s.html" % parameters.sampleName.value)
     print("Output report to %s" % reportFilePath)
