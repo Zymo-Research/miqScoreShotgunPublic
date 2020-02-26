@@ -57,6 +57,7 @@ WORKINGFOLDER	|	string	|	/data/working	|	Path to working folder for temporary fi
 OUTPUTFOLDER	|	string	|	/data/output	|	Folder within the container to write output data
 REFERENCEGENOME	|	string	|	[folderWithPackage]/reference/zrCommunityStandard.fa	|	File containing the reference sequence for the standard within the container
 FILENAMINGSTANDARD	|	string	|	ZYMO	|	How sequence files will be named (other option is "illumina")
+BACTERIAONLY | BOOL | FALSE | Analyze and calculate MIQ score on bacteria only.
 MODE | string | PE | Running mode.  PE for paired-end, SE for single end, LONG for Nanopore reads.  PE and SE use similar alignment but different analysis logic. SE and LONG use the same analysis logic, but different aligners.
 
 

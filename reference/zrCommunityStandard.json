@@ -142,6 +142,16 @@
             "scerevisiae": 2,
             "cneoformans": 2
         },
+        "GenomicBacteriaOnly": {
+            "paeruginosa": 12.5,
+            "ecoli": 12.5,
+            "senterica": 12.5,
+            "lfermentum": 12.5,
+            "efaecalis": 12.5,
+            "saureus": 12.5,
+            "lmonocytogenes": 12.5,
+            "bsubtilis": 12.5
+        },
         "16s": {
             "paeruginosa": 4.2,
             "ecoli": 10.1,

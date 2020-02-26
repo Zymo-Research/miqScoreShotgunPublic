@@ -27,8 +27,16 @@ def getApplicationParametersSE():
     parameters.addParameter("referenceGenome", str, default=default.referenceGenome, expectedFile=True)
     parameters.addParameter("fileNamingStandard", str, default="zymo", externalValidation=True)
     parameters.addParameter("referenceDataFile", str, default = default.referenceDataFile, expectedFile=True)
-    parameters.addParameter("goodMiqExample", str, default = default.goodMiqExample, expectedFile=True)
-    parameters.addParameter("badMiqExample", str, default=default.badMiqExample, expectedFile=True)
+    parameters.addParameter("bacteriaOnly", bool, required=False, default=False)
+    if parameters.bacteriaOnly.value:
+        print("ANALYZING BACTERIA ONLY")
+        defaultBadExample = default.badMiqExampleBacteriaOnly
+        defaultGoodExample = default.goodMiqExampleBacteriaOnly
+    else:
+        defaultBadExample = default.badMiqExample
+        defaultGoodExample = default.goodMiqExample
+    parameters.addParameter("goodMiqExample", str, default=defaultGoodExample, expectedFile=True)
+    parameters.addParameter("badMiqExample", str, default=defaultBadExample, expectedFile=True)
     if not validSampleName(parameters.sampleName.value):
         logger.error("Invalid sample name given: %s" %parameters.sampleName.value)
         raise ValueError("Invalid sample name given: %s" %parameters.sampleName.value)
@@ -48,8 +56,16 @@ def getApplicationParametersPE():
     parameters.addParameter("referenceGenome", str, default=default.referenceGenome, expectedFile=True)
     parameters.addParameter("fileNamingStandard", str, default="zymo", externalValidation=True)
     parameters.addParameter("referenceDataFile", str, default=default.referenceDataFile, expectedFile=True)
-    parameters.addParameter("goodMiqExample", str, default = default.goodMiqExample, expectedFile=True)
-    parameters.addParameter("badMiqExample", str, default=default.badMiqExample, expectedFile=True)
+    parameters.addParameter("bacteriaOnly", bool, required=False, default=False)
+    if parameters.bacteriaOnly.value:
+        print("ANALYZING BACTERIA ONLY")
+        defaultBadExample = default.badMiqExampleBacteriaOnly
+        defaultGoodExample = default.goodMiqExampleBacteriaOnly
+    else:
+        defaultBadExample = default.badMiqExample
+        defaultGoodExample = default.goodMiqExample
+    parameters.addParameter("goodMiqExample", str, default=defaultGoodExample, expectedFile=True)
+    parameters.addParameter("badMiqExample", str, default=defaultBadExample, expectedFile=True)
     if not validSampleName(parameters.sampleName.value):
         logger.error("Invalid sample name given: %s" %parameters.sampleName.value)
         raise ValueError("Invalid sample name given: %s" %parameters.sampleName.value)
@@ -68,8 +84,16 @@ def getApplicationParametersLong():
     parameters.addParameter("referenceGenome", str, default=default.referenceGenome, expectedFile=True)
     parameters.addParameter("fileNamingStandard", str, default="zymo", externalValidation=True)
     parameters.addParameter("referenceDataFile", str, default=default.referenceDataFileHMW, expectedFile=True)
-    parameters.addParameter("goodMiqExample", str, default = default.goodMiqExampleHMW, expectedFile=True)
-    parameters.addParameter("badMiqExample", str, default=default.badMiqExampleHMW, expectedFile=True)
+    parameters.addParameter("bacteriaOnly", bool, required=False, default=False)
+    if parameters.bacteriaOnly.value:
+        print("ANALYZING BACTERIA ONLY")
+        defaultBadExample = default.badMiqExampleBacteriaOnlyHMW
+        defaultGoodExample = default.goodMiqExampleBacteriaOnlyHMW
+    else:
+        defaultBadExample = default.badMiqExampleHMW
+        defaultGoodExample = default.goodMiqExampleHMW
+    parameters.addParameter("goodMiqExample", str, default=defaultGoodExample, expectedFile=True)
+    parameters.addParameter("badMiqExample", str, default=defaultBadExample, expectedFile=True)
     if not validSampleName(parameters.sampleName.value):
         logger.error("Invalid sample name given: %s" %parameters.sampleName.value)
         raise ValueError("Invalid sample name given: %s" %parameters.sampleName.value)
@@ -178,8 +202,12 @@ readFatePrintNames = {"filteredReads": "Failed Quality Filter",
 
 
 def analyzeStandardResult(resultTable:dict):
+    if not parameters.bacteriaOnly.value:
+        analysisMethod = "Genomic"
+    else:
+        analysisMethod = "GenomicBacteriaOnly"
     referenceData = miqScoreNGSReadCountPublic.referenceHandler.StandardReference(parameters.referenceDataFile.value)
-    calculator = miqScoreNGSReadCountPublic.MiqScoreCalculator(referenceData, analysisMethod="Genomic", floor=0)
+    calculator = miqScoreNGSReadCountPublic.MiqScoreCalculator(referenceData, analysisMethod=analysisMethod, floor=0)
     miqScoreResult = calculator.calculateMiq(resultTable, parameters.sampleName.value)
     miqScoreResult.makeReadFateChart(readFatePrintNames=readFatePrintNames)
     miqScoreResult.makeRadarPlots()
@@ -219,7 +247,11 @@ def generateReport(result:miqScoreNGSReadCountPublic.MiqScoreData):
     templateFile = open(templateFilePath, 'r')
     template = templateFile.read()
     templateFile.close()
-    goodMiq, badMiq = miqScoreNGSReadCountPublic.loadExampleData(parameters.goodMiqExample.value, parameters.badMiqExample.value, referenceData, "Genomic")
+    if not parameters.bacteriaOnly.value:
+        analysisMethod = "Genomic"
+    else:
+        analysisMethod = "GenomicBacteriaOnly"
+    goodMiq, badMiq = miqScoreNGSReadCountPublic.loadExampleData(parameters.goodMiqExample.value, parameters.badMiqExample.value, referenceData, analysisMethod)
     replacementTable = generateReportReplacementTable(result, goodMiq, badMiq, readFatePrintNames=readFatePrintNames)
     report = miqScoreNGSReadCountPublic.reportGeneration.generateReport(template, replacementTable)
     reportFilePath = os.path.join(parameters.outputFolder.value, "%s.html" % parameters.sampleName.value)
@@ -243,6 +275,8 @@ if __name__ == "__main__":
         parameters = getApplicationParametersSE()
     elif applicationMode == "LONG":
         parameters = getApplicationParametersLong()
+    else:
+        raise RuntimeError("This should never be reached as the application mode checker should have caught an invalid mode. Please investigate how this happened. Application mode: %s" %applicationMode)
     logger.debug("Starting analysis")
     bamFilePath = os.path.join(parameters.outputFolder.value, "%s.bam" %parameters.sampleName.value)
     if applicationMode == "PE":
@@ -254,6 +288,8 @@ if __name__ == "__main__":
     elif applicationMode == "LONG":
         miqScoreShotgunPublicSupport.alignmentAnalysis.minimap2.minimapAlign(parameters.reads.value, parameters.workingFolder.value, bamFilePath, parameters.referenceGenome.value)
         readTable = miqScoreShotgunPublicSupport.alignmentAnalysis.alignmentAnalysisSE.bamFileProcessor(bamFilePath)
+    else:
+        raise RuntimeError("This should never be reached as the application mode checker should have caught an invalid mode. Please investigate how this happened. Application mode: %s" %applicationMode)
     standardAnalysisResults = analyzeStandardResult(readTable)
     saveResult(standardAnalysisResults)
     generateReport(standardAnalysisResults)
