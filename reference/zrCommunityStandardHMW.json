@@ -131,6 +131,15 @@
             "lmonocytogenes": 14,
             "bsubtilis": 14,
             "scerevisiae": 2
+        },
+         "GenomicBacteriaOnly": {
+            "paeruginosa": 14.29,
+            "ecoli": 14.29,
+            "senterica": 14.29,
+            "efaecalis": 14.29,
+            "saureus": 14.29,
+            "lmonocytogenes": 14.29,
+            "bsubtilis": 14.29
         }
     }
 }
