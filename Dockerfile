@@ -63,6 +63,7 @@ COPY ./requirements.txt /opt/referenceBuild
 
 #doing expensive and unlikely to change build processes here to speed up testing builds
 RUN cd /opt/referenceBuild/ && \
+    pip3 install -U pip && \
     pip3 install -r requirements.txt && \
     cd reference && \
     echo "Indexing standard genome" && \
