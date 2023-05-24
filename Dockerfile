@@ -27,7 +27,7 @@ RUN cd /tmp &&\
     tar -xvf v0.7.16.tar.gz && \
     rm v0.7.16.tar.gz && \
     cd bwa-0.7.16 &&\
-    make && \
+    make CC='gcc -fcommon' && \
     cd /tmp && \
     cp -r bwa-0.7.16 /opt/ && \
     rm -rf bwa-0.7.16
