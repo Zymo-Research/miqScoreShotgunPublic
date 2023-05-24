@@ -1,6 +1,6 @@
 [submodule "miqScoreNGSReadCountPublic"]
 	path = miqScoreNGSReadCountPublic
-	url = git@github.com:Zymo-Research/miqScoreNGSReadCountPublic.git
+	url = https://github.com/Zymo-Research/miqScoreNGSReadCountPublic.git
 [submodule "miqScoreShotgunPublicSupport"]
 	path = miqScoreShotgunPublicSupport
 	url = https://github.com/Zymo-Research/miqScoreShotgunPublicSupport.git
