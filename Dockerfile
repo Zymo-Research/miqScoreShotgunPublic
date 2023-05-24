@@ -7,6 +7,8 @@ WORKDIR /
 
 RUN apt-get update && \
     apt install -y autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libssl-dev libncurses5-dev && \
+    apt autoclean && \
+    apt autoremove -y && \
     cd tmp && \
     wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 && \
     tar -xjvf samtools-1.9.tar.bz2 && \
