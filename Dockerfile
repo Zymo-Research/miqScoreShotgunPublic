@@ -1,4 +1,4 @@
-FROM python:3.6.7
+FROM python:3.7
 
 MAINTAINER Michael M. Weinstein, Zymo Research
 LABEL version="0.0.1"
