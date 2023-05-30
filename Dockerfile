@@ -1,4 +1,4 @@
-FROM python:3.6.7
+FROM python:3.7
 
 MAINTAINER Michael M. Weinstein, Zymo Research
 LABEL version="0.0.1"
@@ -7,6 +7,8 @@ WORKDIR /
 
 RUN apt-get update && \
     apt install -y autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libssl-dev libncurses5-dev && \
+    apt autoclean && \
+    apt autoremove -y && \
     cd tmp && \
     wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 && \
     tar -xjvf samtools-1.9.tar.bz2 && \
@@ -27,7 +29,7 @@ RUN cd /tmp &&\
     tar -xvf v0.7.16.tar.gz && \
     rm v0.7.16.tar.gz && \
     cd bwa-0.7.16 &&\
-    make && \
+    make CC='gcc -fcommon' && \
     cd /tmp && \
     cp -r bwa-0.7.16 /opt/ && \
     rm -rf bwa-0.7.16
@@ -61,6 +63,7 @@ COPY ./requirements.txt /opt/referenceBuild
 
 #doing expensive and unlikely to change build processes here to speed up testing builds
 RUN cd /opt/referenceBuild/ && \
+    pip3 install -U pip && \
     pip3 install -r requirements.txt && \
     cd reference && \
     echo "Indexing standard genome" && \
