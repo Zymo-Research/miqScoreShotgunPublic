@@ -1,7 +1,7 @@
-FROM python:3.7-slim-bullseye
+FROM python:3.7
 
 LABEL author = Michael M. Weinstein, Zymo Research
-LABEL version="0.0.1"
+LABEL version="0.1.0"
 
 WORKDIR /
 
